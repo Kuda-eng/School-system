@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Teacher Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h2>Welcome, Teacher</h2>
+
+    <!-- Grade Form -->
+    <h3>Enter Student Grade</h3>
+    <form id="gradeForm">
+      <label for="gradeStudent">Student:</label>
+      <select id="gradeStudent" required>
+        <option value="">Loading students...</option>
+      </select><br />
+
+      <label>Subject:</label>
+      <input type="text" id="subject" required /><br />
+
+      <label>Score:</label>
+      <input type="number" id="score" min="0" required /><br />
+
+      <label>Total:</label>
+      <input type="number" id="total" min="1" required /><br />
+
+      <label>Comment:</label>
+      <input type="text" id="comment" /><br />
+
+      <label>Term:</label>
+      <input type="text" id="term" placeholder="Term 1" /><br />
+
+      <label>Year:</label>
+      <input type="number" id="year" value="2025" /><br />
+
+      <button type="submit">Submit Grade</button>
+    </form>
+    <p id="gradeMsg" style="font-weight: bold;"></p>
+
+    <hr />
+
+    <!-- All Grades Table -->
+    <h3>All Grades</h3>
+    <table id="allGradesTable" border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Subject</th>
+          <th>Score</th>
+          <th>Total</th>
+          <th>Term</th>
+          <th>Year</th>
+          <th>Comment</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Grades will be populated here -->
+      </tbody>
+    </table>
+
+    <br />
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <script>
+    // Get references to elements
+    const gradeForm = document.getElementById('gradeForm');
+    const gradeStudent = document.getElementById('gradeStudent');
+    const gradeMsg = document.getElementById('gradeMsg');
+    const allGradesTableBody = document.querySelector('#allGradesTable tbody');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Load students for the dropdown (replace URL with your API)
+    async function loadStudents() {
+      try {
+        const res = await fetch('/api/users/students', {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        if (!res.ok) throw new Error('Failed to fetch students');
+        const students = await res.json();
+
+        gradeStudent.innerHTML = '<option value="">Select a student</option>';
+        students.forEach(student => {
+          const option = document.createElement('option');
+          option.value = student._id;
+          option.textContent = student.name || student.email || 'Unnamed Student';
+          gradeStudent.appendChild(option);
+        });
+      } catch (error) {
+        gradeStudent.innerHTML = '<option value="">Failed to load students</option>';
+        console.error(error);
+      }
+    }
+
+    // Load all grades for this teacher
+    async function loadGrades() {
+      try {
+        const res = await fetch('/api/results/teacher', { // Adjust endpoint as needed
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        if (!res.ok) throw new Error('Failed to fetch grades');
+        const grades = await res.json();
+
+        allGradesTableBody.innerHTML = '';
+        if (grades.length === 0) {
+          allGradesTableBody.innerHTML = '<tr><td colspan="8">No grades available</td></tr>';
+          return;
+        }
+
+        grades.forEach(g => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${g.studentName || g.studentEmail || 'Unknown'}</td>
+            <td>${g.subject}</td>
+            <td>${g.score}</td>
+            <td>${g.total}</td>
+            <td>${g.term}</td>
+            <td>${g.year}</td>
+            <td>${g.comment || ''}</td>
+            <td>
+              <!-- You can add Edit/Delete buttons here -->
+            </td>
+          `;
+          allGradesTableBody.appendChild(row);
+        });
+      } catch (error) {
+        allGradesTableBody.innerHTML = '<tr><td colspan="8">Failed to load grades</td></tr>';
+        console.error(error);
+      }
+    }
+
+    // Handle form submission to post a grade
+    gradeForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      gradeMsg.textContent = '';
+
+      const data = {
+        studentId: gradeStudent.value,
+        subject: document.getElementById('subject').value.trim(),
+        score: Number(document.getElementById('score').value),
+        total: Number(document.getElementById('total').value),
+        comment: document.getElementById('comment').value.trim(),
+        term: document.getElementById('term').value.trim(),
+        year: Number(document.getElementById('year').value)
+      };
+
+      if (!data.studentId) {
+        gradeMsg.textContent = 'Please select a student.';
+        gradeMsg.style.color = 'red';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/results', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        if (res.ok) {
+          gradeMsg.textContent = '✅ Grade submitted successfully!';
+          gradeMsg.style.color = 'green';
+          gradeForm.reset();
+          loadGrades(); // Refresh the table
+        } else {
+          gradeMsg.textContent = result.message || 'Failed to submit grade.';
+          gradeMsg.style.color = 'red';
+        }
+      } catch (error) {
+        gradeMsg.textContent = 'Error submitting grade.';
+        gradeMsg.style.color = 'red';
+        console.error(error);
+      }
+    });
+
+    // Logout function
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = '/login.html'; // Adjust path if needed
+    });
+
+    // Initialize page data
+    loadStudents();
+    loadGrades();
+  </script>
+</body>
+</html>

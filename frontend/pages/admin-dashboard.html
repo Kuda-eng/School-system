@@ -1,0 +1,113 @@
+<!-- frontend/pages/admin-dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h2>Admin Dashboard</h2>
+
+    <form id="addUserForm">
+      <h3>Add User</h3>
+      <label for="fullName">Full Name:</label><br />
+      <input type="text" id="fullName" name="fullName" required /><br />
+
+      <label for="email">Email:</label><br />
+      <input type="email" id="email" name="email" required /><br />
+
+      <label for="password">Password:</label><br />
+      <input type="password" id="password" name="password" required /><br />
+
+      <label for="role">Role:</label><br />
+      <select id="role" name="role" required>
+        <option value="">-- Select Role --</option>
+        <option value="student">Student</option>
+        <option value="teacher">Teacher</option>
+        <option value="parent">Parent</option>
+      </select><br /><br />
+
+      <button type="submit">Add User</button>
+    </form>
+
+    <p id="message" style="color:green;"></p>
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <script src="../js/admin-dashboard.js"></script>
+</body>
+</html>
+
+<hr><br>
+<h3>Registered Users</h3>
+<table id="usersTable" border="1" cellpadding="5" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Fetched users will appear here -->
+  </tbody>
+</table>
+<hr><br>
+<h3>Set Monthly Fee for Student</h3>
+<form id="feeForm">
+  <label for="studentSelect">Select Student:</label><br />
+  <select id="studentSelect" required>
+    <option value="">-- Select Student --</option>
+    <!-- Populated via JS -->
+  </select><br />
+
+  <label for="feeAmount">Fee Amount (USD):</label><br />
+  <input type="number" id="feeAmount" required /><br /><br />
+
+  <button type="submit">Set Fee</button>
+</form>
+<p id="feeMsg" style="color:green;"></p>
+
+<hr><br>
+<h3>All Student Fee Records</h3>
+<table id="feesTable" border="1" cellpadding="5" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Student Name</th>
+      <th>Email</th>
+      <th>Fee Amount</th>
+      <th>Last Updated</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Data goes here -->
+  </tbody>
+</table>
+
+<hr><br>
+<h3>Record Student Payment</h3>
+<form id="paymentForm">
+  <label for="paymentStudent">Select Student:</label><br />
+  <select id="paymentStudent" required>
+    <!-- Filled by JS -->
+  </select><br />
+
+  <label for="amountPaid">Amount Paid:</label><br />
+  <input type="number" id="amountPaid" required /><br />
+
+  <label for="method">Payment Method:</label><br />
+  <select id="method">
+    <option value="cash">Cash</option>
+    <option value="bank">Bank Transfer</option>
+    <option value="mobile">Mobile Money</option>
+  </select><br />
+
+  <label for="notes">Notes (optional):</label><br />
+  <textarea id="notes" rows="2"></textarea><br /><br />
+
+  <button type="submit">Record Payment</button>
+</form>
+<p id="paymentMsg" style="color:green;"></p>

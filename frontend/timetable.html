@@ -1,0 +1,35 @@
+<!-- frontend/student-timetable.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Timetable</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h2>📅 My Timetable</h2>
+
+    <table border="1" cellpadding="5" cellspacing="0" id="timetableTable">
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Subject</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Location</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Entries will load here -->
+      </tbody>
+    </table>
+
+    <br />
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <script src="../js/timetable.js"></script>
+</body>
+</html>

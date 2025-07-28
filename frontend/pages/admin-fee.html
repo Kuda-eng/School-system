@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Fee Management</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <h2>💼 Admin Fee Management</h2>
+
+  <!-- Update Amount Due Form -->
+  <form id="updateFeeForm">
+    <h3>Update Total Fee for a Student</h3>
+    <input type="text" id="studentId" placeholder="Student ID" required />
+    <input type="number" id="totalAmountDue" placeholder="Total Amount Due" required />
+    <button type="submit">Update Fee</button>
+  </form>
+
+  <hr />
+
+  <!-- Fee Records -->
+  <h3>📊 All Student Fee Records</h3>
+  <button onclick="fetchAllFees()">🔄 Refresh Records</button>
+  <div id="feeRecords"></div>
+
+  <script src="../js/admin-fee.js"></script>
+</body>
+</html>

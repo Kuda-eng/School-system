@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Library - Student View</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      pointer-events: auto;
+    }
+
+    /* Disable text selection & context menu */
+    body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    body, iframe {
+      -webkit-touch-callout: none;
+      -webkit-user-drag: none;
+    }
+
+    iframe::-webkit-media-controls {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 Library</h1>
+
+  <div>
+    <label for="filter-grade">Grade:</label>
+    <select id="filter-grade">
+      <option value="">All</option>
+      <option value="1">Grade 1</option>
+      <option value="2">Grade 2</option>
+      <!-- Add more grades as needed -->
+    </select>
+
+    <label for="filter-subject">Subject:</label>
+    <input type="text" id="filter-subject" placeholder="e.g. Mathematics" />
+
+    <button onclick="fetchBooks()">🔍 Filter</button>
+  </div>
+
+  <div id="book-list"></div>
+
+  <script>
+    async function fetchBooks() {
+      const grade = document.getElementById("filter-grade").value;
+      const subject = document.getElementById("filter-subject").value;
+
+      const query = new URLSearchParams();
+      if (grade) query.append("grade", grade);
+      if (subject) query.append("subject", subject);
+
+      const res = await fetch(`/api/library?${query.toString()}`);
+      const books = await res.json();
+
+      const list = document.getElementById("book-list");
+      list.innerHTML = "";
+
+      if (books.length === 0) {
+        list.innerHTML = "<p>📭 No resources found.</p>";
+        return;
+      }
+
+      books.forEach(book => {
+        const item = document.createElement("div");
+        item.innerHTML = `
+          <h3>${book.title} (${book.grade})</h3>
+          <p><strong>Subject:</strong> ${book.subject}</p>
+          <p>${book.description}</p>
+          <iframe src="${book.fileUrl}#toolbar=0&navpanes=0&scrollbar=0"></iframe>
+          <hr/>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // Disable right-click and key combos (limited effectiveness)
+    document.addEventListener("contextmenu", e => e.preventDefault());
+    document.addEventListener("keydown", e => {
+      if (
+        e.key === "PrintScreen" ||
+        (e.ctrlKey && (e.key === "p" || e.key === "s")) ||
+        (e.metaKey && (e.key === "p" || e.key === "s"))
+      ) {
+        e.preventDefault();
+        alert("📵 Action blocked.");
+      }
+    });
+
+    fetchBooks();
+  </script>
+</body>
+</html>

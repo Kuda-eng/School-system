@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎓 My Results</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h2>📘 My Results</h2>
+
+    <table border="1" cellpadding="5" cellspacing="0" id="resultsTable" style="margin-top: 20px; display: none;">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Score</th>
+          <th>Total</th>
+          <th>Percentage</th>
+          <th>Grade</th>
+          <th>Term</th>
+          <th>Year</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <p id="msg" style="color: red;"></p>
+
+    <br>
+    <button onclick="window.location.href='./student-dashboard.html'">⬅️ Back to Dashboard</button>
+  </div>
+
+  <script src="../js/my-results.js"></script>
+</body>
+</html>

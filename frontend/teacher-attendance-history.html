@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🕒 Attendance History</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h2>🕒 My Attendance History</h2>
+
+    <table border="1" cellpadding="6" cellspacing="0" id="historyTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Day</th>
+          <th>Subject</th>
+          <th>Time</th>
+          <th>Present</th>
+          <th>Absent</th>
+          <th>Late</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Records will load here -->
+      </tbody>
+    </table>
+
+    <br>
+    <button onclick="window.location.href='./teacher-dashboard.html'">⬅️ Back to Dashboard</button>
+  </div>
+
+  <script>
+    const teacherId = sessionStorage.getItem("userId"); // Assume this is set at login
+
+    window.onload = async () => {
+      const res = await fetch(`http://localhost:5000/api/attendance/history/${teacherId}`, {
+        credentials: 'include'
+      });
+      const data = await res.json();
+      const tbody = document.querySelector('#historyTable tbody');
+
+      if (!Array.isArray(data) || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7">No attendance history found.</td></tr>`;
+        return;
+      }
+
+      data.forEach(record => {
+        const presentCount = record.studentStatuses.filter(s => s.status === 'present').length;
+        const absentCount = record.studentStatuses.filter(s => s.status === 'absent').length;
+        const lateCount = record.studentStatuses.filter(s => s.status === 'late').length;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${new Date(record.date).toLocaleDateString()}</td>
+          <td>${record.day}</td>
+          <td>${record.subject}</td>
+          <td>${record.periodStart} - ${record.periodEnd}</td>
+          <td>${presentCount}</td>
+          <td>${absentCount}</td>
+          <td>${lateCount}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    };
+  </script>
+</body>
+</html>

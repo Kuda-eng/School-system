@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Library</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .viewer-container {
+      height: 500px;
+      width: 100%;
+      border: 1px solid #ccc;
+      position: relative;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none; /* Disable interaction */
+    }
+
+    body, html {
+      user-select: none;           /* Prevent text selection */
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+
+    @media print {
+      body {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📖 Library</h2>
+
+    <div id="libraryList"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/api/library/all');
+        const resources = await response.json();
+
+        const libraryList = document.getElementById('libraryList');
+        resources.forEach((item) => {
+          const card = document.createElement('div');
+          card.style.marginBottom = '20px';
+
+          card.innerHTML = `
+            <h3>${item.title} (${item.isSyllabus ? 'Syllabus' : 'Book'})</h3>
+            <p><strong>Subject:</strong> ${item.subject} | <strong>Grade:</strong> ${item.grade}</p>
+            <p>${item.description}</p>
+            <div class="viewer-container">
+              <iframe src="${item.fileUrl}#toolbar=0&navpanes=0&scrollbar=0"></iframe>
+            </div>
+          `;
+
+          libraryList.appendChild(card);
+        });
+      } catch (error) {
+        document.getElementById('libraryList').textContent = '❌ Failed to load library.';
+      }
+    });
+
+    // Block screenshot attempts (best effort)
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'PrintScreen' || (e.ctrlKey && e.key === 'p')) {
+        e.preventDefault();
+        alert("📵 Screenshot/Print is disabled.");
+      }
+    });
+  </script>
+</body>
+</html>

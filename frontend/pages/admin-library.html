@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Library Upload</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>📚 Upload Book or Syllabus</h2>
+    <form id="uploadForm">
+      <label>Title:</label>
+      <input type="text" name="title" required />
+
+      <label>Description:</label>
+      <textarea name="description" required></textarea>
+
+      <label>Subject:</label>
+      <input type="text" name="subject" required />
+
+      <label>Grade:</label>
+      <input type="text" name="grade" required />
+
+      <label>File URL (PDF Link):</label>
+      <input type="url" name="fileUrl" required />
+
+      <label>Type:</label>
+      <select name="isSyllabus" required>
+        <option value="false">Book</option>
+        <option value="true">Syllabus</option>
+      </select>
+
+      <button type="submit">Upload</button>
+    </form>
+
+    <div id="uploadMessage" style="margin-top: 10px;"></div>
+  </div>
+
+  <script>
+    const uploadForm = document.getElementById('uploadForm');
+    const messageDiv = document.getElementById('uploadMessage');
+
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(uploadForm);
+      const data = Object.fromEntries(formData.entries());
+      data.isSyllabus = data.isSyllabus === "true"; // convert to boolean
+
+      try {
+        const response = await fetch('/api/library/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token') // must be admin
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        messageDiv.textContent = result.message;
+        messageDiv.style.color = response.ok ? 'green' : 'red';
+      } catch (err) {
+        messageDiv.textContent = 'Upload failed.';
+        messageDiv.style.color = 'red';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h2>Welcome, Student</h2>
+
+    <!-- Monthly Fee Section -->
+    <div id="feeSection">
+      <h3>Your Monthly Fee</h3>
+      <p id="feeInfo">Loading...</p>
+    </div>
+
+    <!-- Payment History Section -->
+    <hr>
+    <h3>Your Payment History</h3>
+    <p><strong>Total Paid:</strong> <span id="totalPaid">Loading...</span></p>
+    <p><strong>Outstanding Balance:</strong> <span id="balance">Loading...</span></p>
+
+    <table id="paymentTable" border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Amount</th>
+          <th>Method</th>
+          <th>Date</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Payments inserted here -->
+      </tbody>
+    </table>
+
+    <!-- Grades Section -->
+    <hr>
+    <h3>Your Grades</h3>
+    <table id="gradesTable" border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Score</th>
+          <th>Total</th>
+          <th>%</th>
+          <th>Comment</th>
+          <th>Term</th>
+          <th>Year</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Grades inserted here -->
+      </tbody>
+    </table>
+
+    <!-- Logout Button -->
+    <br>
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <!-- JS -->
+  <script src="../js/student-dashboard.js"></script>
+</body>
+</html>

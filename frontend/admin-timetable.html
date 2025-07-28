@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Assign Timetable</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h2>🗓️ Assign Timetable</h2>
+
+    <form id="timetableForm">
+      <label>Role:</label>
+      <select id="role" required>
+        <option value="">--Select--</option>
+        <option value="student">Student</option>
+        <option value="teacher">Teacher</option>
+      </select><br>
+
+      <label>User:</label>
+      <select id="userSelect" required>
+        <option value="">Select a role first</option>
+      </select><br><br>
+
+      <div id="entriesContainer">
+        <h4>🧾 Timetable Entries:</h4>
+        <!-- Dynamic entry fields -->
+      </div>
+
+      <button type="button" id="addEntryBtn">➕ Add Entry</button><br><br>
+      <button type="submit">✅ Save Timetable</button>
+    </form>
+
+    <p id="msg"></p>
+
+    <hr>
+    <h3>📋 Current Timetable for Selected User</h3>
+    <table border="1" cellpadding="5" cellspacing="0" id="currentTimetable">
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Subject</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Location</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Loaded dynamically -->
+      </tbody>
+    </table>
+
+    <br>
+    <button onclick="window.location.href='./admin-dashboard.html'">⬅️ Back to Dashboard</button>
+  </div>
+
+  <script src="../js/admin-timetable.js"></script>
+</body>
+</html>

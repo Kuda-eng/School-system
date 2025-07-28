@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📋 Mark Attendance</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h2>📋 Mark Attendance</h2>
+
+    <form id="attendanceForm">
+      <label>Date:</label>
+      <input type="date" id="date" required><br>
+
+      <label>Day:</label>
+      <input type="text" id="day" placeholder="e.g. Monday" required><br>
+
+      <label>Subject:</label>
+      <input type="text" id="subject" required><br>
+
+      <label>Start Time:</label>
+      <input type="time" id="start" required><br>
+
+      <label>End Time:</label>
+      <input type="time" id="end" required><br>
+
+      <h4>🧑‍🎓 Students:</h4>
+      <div id="studentsContainer">
+        <!-- Students will be loaded here -->
+      </div>
+
+      <br>
+      <button type="submit">✅ Submit Attendance</button>
+    </form>
+
+    <p id="msg"></p>
+    <br>
+    <button onclick="window.location.href='./teacher-dashboard.html'">⬅️ Back</button>
+  </div>
+
+  <script>
+    const teacherId = sessionStorage.getItem("userId"); // set during login
+
+    window.onload = async () => {
+      const res = await fetch('http://localhost:5000/api/admin/students', {
+        credentials: 'include'
+      });
+      const students = await res.json();
+      const container = document.getElementById('studentsContainer');
+      students.forEach(s => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <label>${s.fullName} (${s.email})</label>
+          <select data-id="${s._id}">
+            <option value="present">Present</option>
+            <option value="absent">Absent</option>
+            <option value="late">Late</option>
+          </select>
+          <br>`;
+        container.appendChild(div);
+      });
+    };
+
+    document.getElementById('attendanceForm').addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const studentStatuses = Array.from(document.querySelectorAll('#studentsContainer select')).map(sel => ({
+        studentId: sel.dataset.id,
+        status: sel.value
+      }));
+
+      const payload = {
+        teacherId,
+        date: document.getElementById('date').value,
+        day: document.getElementById('day').value,
+        subject: document.getElementById('subject').value,
+        periodStart: document.getElementById('start').value,
+        periodEnd: document.getElementById('end').value,
+        studentStatuses
+      };
+
+      const res = await fetch('http://localhost:5000/api/attendance/mark', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+      document.getElementById('msg').textContent = result.message || 'Saved!';
+      if (res.ok) document.getElementById('attendanceForm').reset();
+    });
+  </script>
+</body>
+</html>
